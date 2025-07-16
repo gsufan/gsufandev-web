@@ -1,11 +1,190 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GSufanDev Web</title>
+  <meta charset="UTF-8" />
+  <title>Gabriel Sufan - Portafolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    #progressBar {
+      transition: width 0.2s ease;
+    }
+    .glitch {
+      animation: glitch 1s infinite;
+    }
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-1px, 1px); }
+      40% { transform: translate(1px, -1px); }
+      60% { transform: translate(-0.5px, 0.5px); }
+      80% { transform: translate(0.5px, -0.5px); }
+      100% { transform: translate(0); }
+    }
+  </style>
 </head>
-<body>
-    <h1>Hola que tal</h1>
+<body class="bg-gray-900 text-white font-mono relative">
+
+    <!-- HUD superior -->
+    <header class="sticky top-0 z-50 bg-gray-800 px-6 py-4 flex justify-between items-center">
+    <h1 id="easterTrigger" class="text-lg font-bold cursor-pointer">🧑‍💻 Gabriel Sufan</h1>
+    <div class="flex items-center gap-4">
+        <div class="w-48 h-2 bg-gray-700 rounded">
+        <div id="progressBar" class="h-2 bg-green-400 rounded" style="width: 0%;"></div>
+        </div>
+        <button id="toggleMode" class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm">
+        Activar Modo Juego 🎮
+        </button>
+    </div>
+    </header>
+
+    <!-- Consola secreta -->
+    <div id="secretConsole" class="hidden fixed inset-0 bg-black text-green-400 p-6 font-mono z-[9999]">
+    <div class="mb-4">Modo Terminal Activado - escribe <code>help</code></div>
+    <div id="consoleOutput" class="overflow-y-auto h-60 border border-green-500 p-2 mb-2"></div>
+    <input type="text" id="consoleInput" placeholder="Escribe un comando..." class="w-full bg-black border-b border-green-400 outline-none p-2" autofocus>
+    <button onclick="document.getElementById('secretConsole').classList.add('hidden')" class="mt-4 text-sm hover:underline">[Salir de la consola]</button>
+    </div>
+
+
+  <!-- Contenido principal -->
+  <main class="max-w-4xl mx-auto p-6 space-y-20">
+
+    <!-- Sobre mí -->
+    <section id="about">
+      <h2 class="text-2xl font-bold mb-2">📘 Sobre mí</h2>
+      <p>
+        Soy estudiante de Ingeniería en Informática, me apasiona combinar lógica con creatividad, ya sea desarrollando simuladores físicos o diseñando experiencias narrativas interactivas. Me gusta resolver problemas reales y aprender tecnologías nuevas mientras creo cosas útiles (¡o divertidas!).
+      </p>
+    </section>
+
+    <!-- Proyectos -->
+    <section id="projects">
+      <h2 class="text-2xl font-bold mb-2">🧩 Proyectos destacados</h2>
+
+      <div class="space-y-4">
+        <div class="border border-gray-700 p-4 rounded-md hover:shadow-xl transition">
+          <h3 class="text-xl font-semibold">Simulador de Movimiento 🧪</h3>
+          <p>Aplicación educativa desarrollada en Python para representar gráficamente funciones de movimiento. Permite ingresar funciones personalizadas y visualizar su comportamiento en tiempo real.</p>
+          <span class="text-green-400 text-sm">Tecnologías: Python, Tkinter, matplotlib, SymPy</span>
+        </div>
+        <!-- Agrega más proyectos aquí -->
+      </div>
+    </section>
+
+    <!-- Habilidades -->
+    <section id="skills">
+      <h2 class="text-2xl font-bold mb-2">🧠 Habilidades técnicas</h2>
+      <ul class="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+        <li>🟢 Python</li>
+        <li>🟢 JavaScript</li>
+        <li>🟢 Godot & GDScript</li>
+        <li>🟢 SQL</li>
+        <li>🟡 React (en progreso)</li>
+        <li>🟡 Docker (aprendiendo)</li>
+      </ul>
+    </section>
+
+    <!-- Logros -->
+    <section id="achievements" class="hidden">
+      <h2 class="text-2xl font-bold mb-2">🏅 Logros desbloqueados</h2>
+      <ul class="list-disc pl-5">
+        <li>🔓 Primer visitante del portafolio</li>
+        <li>🔓 Explorador del 100%</li>
+        <li>🔒 Descubriste el secreto oculto</li>
+      </ul>
+    </section>
+
+    <!-- Contacto -->
+    <section id="contact">
+      <h2 class="text-2xl font-bold mb-2">📡 Contacto</h2>
+      <p>¿Quieres contactarme? Puedes escribirme a <a href="mailto:gsufan.dev@gmail.com" class="text-green-400 hover:underline">gsufan.dev@gmail.com</a> o seguirme en redes sociales para ver en qué estoy trabajando.</p>
+    </section>
+  </main>
+
+  <!-- Script para modo juego + progreso -->
+  <script>
+    const toggleBtn = document.getElementById('toggleMode');
+    const achievements = document.getElementById('achievements');
+    const progressBar = document.getElementById('progressBar');
+    let modoJuego = false;
+
+    toggleBtn.addEventListener('click', () => {
+      modoJuego = !modoJuego;
+      document.body.classList.toggle('bg-black', modoJuego);
+      document.body.classList.toggle('text-green-400', modoJuego);
+      achievements.classList.toggle('hidden', !modoJuego);
+      toggleBtn.innerText = modoJuego ? "Modo Clásico 🧑‍💻" : "Activar Modo Juego 🎮";
+      document.querySelectorAll('h2').forEach(h => h.classList.toggle('glitch', modoJuego));
+    });
+
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const percent = Math.round((scrollTop / docHeight) * 100);
+      progressBar.style.width = `${percent}%`;
+
+      if (modoJuego && percent >= 100) {
+        // Bonus: desbloquear logro
+        if (!document.querySelector('.unlocked')) {
+          const unlock = document.createElement('div');
+          unlock.className = "text-center mt-4 text-yellow-400 text-sm unlocked";
+          unlock.textContent = "🎉 Logro desbloqueado: Explorador 100%";
+          achievements.appendChild(unlock);
+        }
+      }
+    });
+    let clicks = 0;
+const trigger = document.getElementById('easterTrigger');
+const consoleBox = document.getElementById('secretConsole');
+const consoleInput = document.getElementById('consoleInput');
+const consoleOutput = document.getElementById('consoleOutput');
+
+trigger.addEventListener('click', () => {
+  clicks++;
+  if (clicks >= 5) {
+    consoleBox.classList.remove('hidden');
+    clicks = 0;
+    consoleInput.focus();
+    writeToConsole("Bienvenido a la consola secreta de Gabriel Sufan");
+    writeToConsole("Escribe 'help' para ver comandos");
+  }
+});
+
+function writeToConsole(text) {
+  const line = document.createElement('div');
+  line.textContent = '> ' + text;
+  consoleOutput.appendChild(line);
+  consoleOutput.scrollTop = consoleOutput.scrollHeight;
+}
+
+consoleInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const cmd = consoleInput.value.trim().toLowerCase();
+    consoleInput.value = '';
+    switch (cmd) {
+      case 'help':
+        writeToConsole("Comandos disponibles: whoami, funfact, clear, projects");
+        break;
+      case 'whoami':
+        writeToConsole("Gabriel Sufan, estudiante, hacker de ideas y domador de bugs 🐛🧙‍♂️");
+        break;
+      case 'funfact':
+        writeToConsole("Una vez hizo deploy de un servidor desde una lanza papas... casi.");
+        break;
+      case 'projects':
+        writeToConsole("Puedes ver mis proyectos en la sección principal, pero este es un atajo 🛸");
+        break;
+      case 'clear':
+        consoleOutput.innerHTML = '';
+        break;
+      default:
+        writeToConsole("Comando no reconocido: " + cmd);
+    }
+  }
+});
+
+  </script>
 </body>
 </html>
